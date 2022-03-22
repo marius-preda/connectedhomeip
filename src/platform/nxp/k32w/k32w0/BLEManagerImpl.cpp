@@ -107,9 +107,10 @@ namespace {
 
 /* advertising configuration */
 #define BLEKW_ADV_MAX_NO (2)
-#define BLEKW_SCAN_RSP_MAX_NO (2)
+#define BLEKW_SCAN_RSP_MAX_NO (3)
 #define BLEKW_MAX_ADV_DATA_LEN (31)
 #define CHIP_ADV_SHORT_UUID_LEN (2)
+
 
 /* FreeRTOS sw timer */
 TimerHandle_t sbleAdvTimeoutTimer;
@@ -846,6 +847,13 @@ CHIP_ERROR BLEManagerImpl::ConfigureAdvertisingData(void)
     chipOverBleService[0]   = ShortUUID_CHIPoBLEService[0];
     chipOverBleService[1]   = ShortUUID_CHIPoBLEService[1];
     scan_rsp_data[1].aData  = (uint8_t *) chipOverBleService;
+
+
+    static uint8_t adData1[] = { 0xE0, 0x1C, 0x4B, 0x5E, 0x1E, 0xEB, 0xA1, 0x5C, 0xEE, 0xF4, 0x5E, 0xBA, 0x50, 0x55, 0xFF, 0x01};
+    scan_rsp_data[2].length = 17; //static_cast<uint8_t>(sizeof(adData1) + 1);
+    scan_rsp_data[2].adType = gAdComplete128bitServiceList_c;
+    scan_rsp_data[2].aData = adData1;
+
 
     scanRsp.aAdStructures = scan_rsp_data;
 

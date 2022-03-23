@@ -44,7 +44,7 @@
 #if defined(cPWR_UsePowerDownMode) && (cPWR_UsePowerDownMode)
 #include "PWR_Configuration.h"
 #endif
-
+#include "app_config.h"
 #include "fsl_debug_console.h"
 
 #define APP_DEBUG_TRACE  PRINTF
@@ -142,6 +142,9 @@ const ChipBleUUID ChipUUID_CHIPoBLEChar_TX = { { 0x18, 0xEE, 0x2E, 0xF5, 0x26, 0
 #if defined(cPWR_UsePowerDownMode) && (cPWR_UsePowerDownMode)
 static bool bleAppStopInProgress;
 #endif
+
+static bool_t bEnableBLEOTAFlag = false;
+
 } // namespace
 
 BLEManagerImpl BLEManagerImpl::sInstance;
@@ -152,6 +155,26 @@ CHIP_ERROR BLEManagerImpl::_Init()
     osaEventFlags_t flags;
     BaseType_t bleAppCreated    = errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY;
     uint16_t attChipRxHandle[1] = { (uint16_t) value_chipoble_rx };
+
+	PDM_teStatus pdmStatus;
+	uint16_t bytesRead;
+	APP_DEBUG_TRACE("check PDM_ID_BLE_OTA_FLAG exist\n");
+	if (PDM_bDoesDataExist(PDM_ID_BLE_OTA_FLAG, &bytesRead))
+	{
+		pdmStatus = PDM_eReadDataFromRecord(PDM_ID_BLE_OTA_FLAG, &bEnableBLEOTAFlag, sizeof(bool_t), &bytesRead);
+		if(pdmStatus == PDM_E_STATUS_OK)
+		{
+			APP_DEBUG_TRACE("read PDM_ID_BLE_OTA_FLAG success, %d\n", bEnableBLEOTAFlag);
+		}
+		else
+		{
+			APP_DEBUG_TRACE("read PDM_ID_BLE_OTA_FLAG failure\n");
+		}
+	}
+	if(bEnableBLEOTAFlag == true)
+		APP_DEBUG_TRACE("it can do ble otap with iot toolbox!\n");
+	else if(bEnableBLEOTAFlag == false)
+		APP_DEBUG_TRACE("it can do matter commissioning with chip tool!\n");
 
     mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Enabled;
 

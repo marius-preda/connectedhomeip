@@ -44,6 +44,8 @@
 #define SWU_INTERVAl_WINDOW_MIN_MS (23 * 60 * 60 * 1000) // 23 hours
 #define SWU_INTERVAl_WINDOW_MAX_MS (24 * 60 * 60 * 1000) // 24 hours
 
+#define PDM_ID_BLE_OTA_FLAG   0x8fff
+
 #if K32W_LOG_ENABLED
 #if CHIP_PW_TOKENIZER_LOGGING
 #define K32W_LOG(MSG, ...) ChipLogDetail(Echo, MSG, __VA_ARGS__);

@@ -99,6 +99,10 @@ template("k32w0_sdk") {
       "${k32w0_sdk_root}/middleware/wireless/bluetooth/application/common/gatt_db/macros",
       "${k32w0_sdk_root}/middleware/wireless/bluetooth/host/config",
       "${k32w0_sdk_root}/middleware/wireless/bluetooth/host/interface",
+      "${k32w0_sdk_root}/middleware/wireless/bluetooth/profiles/battery",
+      "${k32w0_sdk_root}/middleware/wireless/bluetooth/profiles/device_info",
+      "${k32w0_sdk_root}/middleware/wireless/bluetooth/profiles/otap",
+      "${k32w0_sdk_root}/middleware/wireless/bluetooth/application/common/otap_client",
       "${k32w0_sdk_root}/middleware/wireless/framework/Common",
       "${k32w0_sdk_root}/middleware/wireless/framework/Flash/External/Interface",
       "${k32w0_sdk_root}/middleware/wireless/framework/Flash/Internal",
@@ -183,6 +187,7 @@ template("k32w0_sdk") {
       "PoolsDetails_c=_block_size_ 32 _number_of_blocks_ 6 _pool_id_(0) _eol_ _block_size_ 256 _number_of_blocks_ 3 _pool_id_(0) _eol_ _block_size_ 512 _number_of_blocks_ 2 _pool_id_(0) _eol_ _block_size_ 768 _number_of_blocks_ 1 _pool_id_(0) _eol_ _block_size_ 268  _number_of_blocks_ 8 _pool_id_(gOtaMemPoolId_c) _eol_",
       "SUPPORT_FOR_15_4=1",
       "gAppMaxConnections_c=1",
+      "gMaxBondedDevices_c=1",
       "gAppUseBonding_d=0",
       "gAppUsePairing_d=0",
       "gAppUsePrivacy_d=0",
@@ -195,6 +200,7 @@ template("k32w0_sdk") {
       "HEAP_SIZE=0xF000",
       "gLoggingActive_d=0",
       "gLogRingPlacementOffset_c=0xF000",
+      "gBleUseHSClock2MbpsPhy_c=0",
     ]
 
     if (chip_mdns == "platform") {
@@ -314,6 +320,10 @@ template("k32w0_sdk") {
       "${k32w0_sdk_root}/middleware/wireless/bluetooth/application/common/ble_conn_manager.c",
       "${k32w0_sdk_root}/middleware/wireless/bluetooth/application/common/ble_host_tasks.c",
       "${k32w0_sdk_root}/middleware/wireless/bluetooth/host/config/ble_globals.c",
+      "${k32w0_sdk_root}/middleware/wireless/bluetooth/application/common/otap_client/otap_client.c",
+      "${k32w0_sdk_root}/middleware/wireless/bluetooth/profiles/battery/battery_service.c",
+      "${k32w0_sdk_root}/middleware/wireless/bluetooth/profiles/device_info/device_info_service.c",
+      "${k32w0_sdk_root}/middleware/wireless/bluetooth/profiles/otap/otap_service.c",
       "${k32w0_sdk_root}/middleware/wireless/framework/Common/MicroInt_arm_sdk2.c",
       "${k32w0_sdk_root}/middleware/wireless/framework/Flash/External/Source/Eeprom_MX25R8035F.c",
       "${k32w0_sdk_root}/middleware/wireless/framework/Flash/Internal/Flash_Adapter.c",

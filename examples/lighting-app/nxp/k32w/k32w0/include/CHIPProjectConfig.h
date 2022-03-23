@@ -157,8 +157,8 @@
  *
  * Set these defines to 1 if NFC Commissioning is needed
  */
-#define CONFIG_CHIP_NFC_COMMISSIONING 1
-#define CHIP_DEVICE_CONFIG_ENABLE_NFC 1
+#define CONFIG_CHIP_NFC_COMMISSIONING 0
+#define CHIP_DEVICE_CONFIG_ENABLE_NFC 0
 
 /**
  *  @def CHIP_CONFIG_MAX_FABRICS

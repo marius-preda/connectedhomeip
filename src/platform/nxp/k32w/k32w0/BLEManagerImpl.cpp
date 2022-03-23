@@ -1108,6 +1108,14 @@ void BLEManagerImpl::HandleConnectEvent(blekw_msg_t * msg)
     blekw_start_connection_timeout();
     sInstance.AddConnection(device_id_loc);
     mFlags.Set(Flags::kRestartAdvertising);
+	if(bEnableBLEOTAFlag)
+    {
+        mFlags.Clear(Flags::kRestartAdvertising);
+        mFlags.Clear(Flags::kAdvertising);
+        mFlags.Clear(Flags::kAdvertisingEnabled);
+        CancelBleAdvTimeoutTimer();
+        APP_DEBUG_TRACE("close ble advertising!!!!!!!!!!!!!!!!!!\r\n");
+    }
     PlatformMgr().ScheduleWork(DriveBLEState, 0);
 }
 

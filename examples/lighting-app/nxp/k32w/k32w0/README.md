@@ -435,4 +435,60 @@ user@ubuntu:~/Desktop/git/connectedhomeip$ ./third_party/nxp/tinycrypt/patch_tin
 - Build without Secure element (_chip_with_se05x=0_) and with tinycrypt enabled (_mbedtls_use_tinycrypt=true_).
 
 After running the patch_tinycrypt.sh script, the tinycrypt ecc operations are enabled. To disable them, simply build without _mbedtls_use_tinycrypt=true_.
- 
+
+<a name="BLE OTAP"></a>
+
+## BLE OTAP
+
+<a name="BLEOTAPbuildingsteps "></a> in order to isolate ble ota and matter
+commissioning, here introduces SW2 long press feature, after long press SW2, it
+will switch to ble ota function or matter commissioing function, if the log
+print "IT CAN DO BLE OTA WITH IOT_TOOLBOX", it can do ble ota using iot toolbox,
+if the log print "IT CAN DO MATTER COMMISSIONING WITH CHIP-TOOL", it can do
+matter commissioning using chip tool.
+
+### generate BLE ota file
+
+-   install
+    [test tool](https://www.nxp.com/webapp/Download?colCode=Test_Tool_12.9.2.2&appType=license&location=null)
+-   after installation, click "OTA Update", and click "Otap Bluetooth LE" in the
+    menu, click "Browse" to select bin file, then clcik "QN9090/K32W061" inpopup
+    window, click "OK", click "Save" to save the ota file, the ota file should
+    have suffix .bleota
+    ![TEST_TOOL_OTA_IMAGE](../../../../platform/nxp/k32w/k32w0/doc/images/test_tool_ota_image.jpg)
+-   copy the ble ota file to your phone
+
+### Building steps
+
+it should be noted that the tokenizer should be enabled to avoid flash overflow
+error while linking
+
+```
+gn gen out/debug --args="k32w0_sdk_root=\"${NXP_K32W061_SDK_ROOT}\" chip_with_OM15082=1 chip_with_ot_cli=0 is_debug=false chip_crypto=\"mbedtls\" chip_with_se05x=0 mbedtls_use_tinycrypt=true chip_pw_tokenizer_logging=true"
+```
+
+### BLE OTA Test
+
+-   install
+    [iot toolbox](https://play.google.com/store/apps/details?id=com.freescale.kinetisbletoolbox)
+    from Google Play Store
+-   after install iot toolbox on your phone, click OTAP prifile
+
+    ![IOT_TOOLBOX_OTAP](../../../../platform/nxp/k32w/k32w0/doc/images/iot-toolbox-otap.jpg)
+
+-   press the USER INTERFACE button to start the ble advertising, you should see
+    the device ble advertising name "MA-3840"
+
+    ![IOT_TOOLBOX_OTAP](../../../../platform/nxp/k32w/k32w0/doc/images/iot-toolbox-advertising.jpg)
+
+-   click "Open" to select the ble ota image on your phone, if the ota file is
+    valid, it will show "Valid File" in the Status.
+
+    ![IOT_TOOLBOX_OTAP](../../../../platform/nxp/k32w/k32w0/doc/images/iot-toolbox-otafile.jpg)
+
+-   click "Upload" to start the ota block transfer, there is a progress bar to
+    show ota progress, when the transfer is over, a popup window will show
+    "Transfer Successfully"
+
+    ![IOT_TOOLBOX_OTAP](../../../../platform/nxp/k32w/k32w0/doc/images/iot-toolbox-ota-test.jpg)
+

@@ -389,14 +389,14 @@ void AppTask::HandleKeyboard(void)
             }
             
             eStatus = PDM_eSaveRecordData(PDM_ID_BLE_OTA_FLAG, (void*)&bEnableBLEOTAFlag, sizeof(bool));
-            K32W_LOG("save 0x879f bFlag:%d status:%d\n", bEnableBLEOTAFlag, eStatus);
+            K32W_LOG("save PDM_ID_BLE_OTA_FLAG bFlag:%d status:%d\n", bEnableBLEOTAFlag, eStatus);
 
-			/* LEDs will start blinking to signal that a Factory Reset was scheduled */
-			sStatusLED.Set(false);
-			sLightLED.Set(false);
-			
-			sStatusLED.Blink(100);
-			sLightLED.Blink(100);
+            /* LEDs will start blinking to signal that a Factory Reset was scheduled */
+            sStatusLED.Set(false);
+            sLightLED.Set(false);
+
+            sStatusLED.Blink(100);
+            sLightLED.Blink(100);
 
 
             // Actually trigger Factory Reset

@@ -49,10 +49,12 @@
 #include "otap_client.h"
 #include "otap_interface.h"
 #include "app_config.h"
-#include "fsl_debug_console.h"
 #include "OtaSupport.h"
+#include "fsl_debug_console.h"
 
-#define APP_DEBUG_TRACE  PRINTF
+
+//#define APP_DEBUG_TRACE  PRINTF
+#define APP_DEBUG_TRACE(...)
 /*******************************************************************************
  * Local data types
  *******************************************************************************/
@@ -162,25 +164,25 @@ CHIP_ERROR BLEManagerImpl::_Init()
     BaseType_t bleAppCreated    = errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY;
     uint16_t attChipRxHandle[1] = { (uint16_t) value_chipoble_rx };
 
-	PDM_teStatus pdmStatus;
-	uint16_t bytesRead;
-	APP_DEBUG_TRACE("check PDM_ID_BLE_OTA_FLAG exist\n");
-	if (PDM_bDoesDataExist(PDM_ID_BLE_OTA_FLAG, &bytesRead))
-	{
-		pdmStatus = PDM_eReadDataFromRecord(PDM_ID_BLE_OTA_FLAG, &bEnableBLEOTAFlag, sizeof(bool_t), &bytesRead);
-		if(pdmStatus == PDM_E_STATUS_OK)
-		{
-			APP_DEBUG_TRACE("read PDM_ID_BLE_OTA_FLAG success, %d\n", bEnableBLEOTAFlag);
-		}
-		else
-		{
-			APP_DEBUG_TRACE("read PDM_ID_BLE_OTA_FLAG failure\n");
-		}
-	}
-	if(bEnableBLEOTAFlag == true)
-		APP_DEBUG_TRACE("it can do ble otap with iot toolbox!\n");
-	else if(bEnableBLEOTAFlag == false)
-		APP_DEBUG_TRACE("it can do matter commissioning with chip tool!\n");
+    PDM_teStatus pdmStatus;
+    uint16_t bytesRead;
+    APP_DEBUG_TRACE("check PDM_ID_BLE_OTA_FLAG exist\n");
+    if (PDM_bDoesDataExist(PDM_ID_BLE_OTA_FLAG, &bytesRead))
+    {
+        pdmStatus = PDM_eReadDataFromRecord(PDM_ID_BLE_OTA_FLAG, &bEnableBLEOTAFlag, sizeof(bool_t), &bytesRead);
+        if(pdmStatus == PDM_E_STATUS_OK)
+        {
+            APP_DEBUG_TRACE("read PDM_ID_BLE_OTA_FLAG success, %d\n", bEnableBLEOTAFlag);
+        }
+        else
+        {
+            APP_DEBUG_TRACE("read PDM_ID_BLE_OTA_FLAG failure\n");
+        }
+    }
+    if(bEnableBLEOTAFlag == true)
+        ChipLogProgress(DeviceLayer,"\nIT CAN DO BLE OTA WITH IOT_TOOLBOX\n\n");
+    else if(bEnableBLEOTAFlag == false)
+        ChipLogProgress(DeviceLayer,"\nIT CAN DO MATTER COMMISSIONING WITH CHIP-TOOL\n\n");
 
     mServiceMode = ConnectivityManager::kCHIPoBLEServiceMode_Enabled;
 
@@ -342,7 +344,6 @@ BLEManagerImpl::CHIPoBLEConState * BLEManagerImpl::GetConnectionState(uint8_t co
 
 CHIP_ERROR BLEManagerImpl::_SetCHIPoBLEServiceMode(CHIPoBLEServiceMode val)
 {
-	APP_DEBUG_TRACE("%s\r\n", __FUNCTION__);
     CHIP_ERROR err = CHIP_NO_ERROR;
 
     VerifyOrExit(val != ConnectivityManager::kCHIPoBLEServiceMode_NotSupported, err = CHIP_ERROR_INVALID_ARGUMENT);
@@ -360,7 +361,6 @@ exit:
 
 CHIP_ERROR BLEManagerImpl::_SetAdvertisingEnabled(bool val)
 {
-	APP_DEBUG_TRACE("%s, val:%d\r\n", __FUNCTION__, val);
     CHIP_ERROR err = CHIP_NO_ERROR;
 
     VerifyOrExit(mServiceMode != ConnectivityManager::kCHIPoBLEServiceMode_NotSupported, err = CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE);
@@ -377,7 +377,6 @@ exit:
 
 CHIP_ERROR BLEManagerImpl::_SetAdvertisingMode(BLEAdvertisingMode mode)
 {
-	APP_DEBUG_TRACE("%s, mode:%d\r\n", __FUNCTION__, mode);
     switch (mode)
     {
     case BLEAdvertisingMode::kFastAdvertising:
@@ -396,10 +395,6 @@ CHIP_ERROR BLEManagerImpl::_SetAdvertisingMode(BLEAdvertisingMode mode)
 
 CHIP_ERROR BLEManagerImpl::_GetDeviceName(char * buf, size_t bufSize)
 {
-	APP_DEBUG_TRACE("%s, bufSize:%d\r\n", __FUNCTION__, bufSize);
-	for(uint8_t i = 0; i < bufSize; i++)
-		APP_DEBUG_TRACE("%c", *(buf+i));
-	APP_DEBUG_TRACE("\r\n");
     if (strlen(mDeviceName) >= bufSize)
     {
         return CHIP_ERROR_BUFFER_TOO_SMALL;
@@ -410,7 +405,6 @@ CHIP_ERROR BLEManagerImpl::_GetDeviceName(char * buf, size_t bufSize)
 
 CHIP_ERROR BLEManagerImpl::_SetDeviceName(const char * deviceName)
 {
-	APP_DEBUG_TRACE("%s, name:%s\r\n", __FUNCTION__, deviceName);
     if (mServiceMode == ConnectivityManager::kCHIPoBLEServiceMode_NotSupported)
     {
         return CHIP_ERROR_UNSUPPORTED_CHIP_FEATURE;
@@ -437,7 +431,6 @@ CHIP_ERROR BLEManagerImpl::_SetDeviceName(const char * deviceName)
 
 void BLEManagerImpl::_OnPlatformEvent(const ChipDeviceEvent * event)
 {
-	APP_DEBUG_TRACE("%s, eventtype:%x\r\n", __FUNCTION__, event->Type);
     switch (event->Type)
     {
     case DeviceEventType::kCHIPoBLESubscribe:
@@ -998,7 +991,6 @@ CHIP_ERROR BLEManagerImpl::StopAdvertising(void)
 void BLEManagerImpl::DriveBLEState(void)
 {
     CHIP_ERROR err = CHIP_NO_ERROR;
-    APP_DEBUG_TRACE("%s\r\n", __FUNCTION__);
 
     // Check if BLE stack is initialized
     VerifyOrExit(mFlags.Has(Flags::kK32WBLEStackInitialized), /* */);
@@ -1016,7 +1008,6 @@ void BLEManagerImpl::DriveBLEState(void)
     {
         // Start/re-start advertising if not already started, or if there is a pending change
         // to the advertising configuration.
-        APP_DEBUG_TRACE("Advertising:%d RestartAdvertising:%d\r\n", mFlags.Has(Flags::kAdvertising), mFlags.Has(Flags::kRestartAdvertising));
         if (!mFlags.Has(Flags::kAdvertising) || mFlags.Has(Flags::kRestartAdvertising))
         {
             err = StartAdvertising();
@@ -1041,7 +1032,6 @@ exit:
 
 void BLEManagerImpl::DriveBLEState(intptr_t arg)
 {
-	APP_DEBUG_TRACE("%s with arg\r\n", __FUNCTION__);
     sInstance.DriveBLEState();
 }
 
